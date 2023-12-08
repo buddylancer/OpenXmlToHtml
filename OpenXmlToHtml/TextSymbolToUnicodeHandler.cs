@@ -21,7 +21,8 @@ namespace Codeuctivity.OpenXmlToHtml
         /// </summary>
         public string TransformText(string text, Dictionary<string, string> fontFamily)
         {
-            if (fontFamily.TryGetValue("font-family", out var currentFontFamily) && currentFontFamily == "Symbol")
+			string currentFontFamily;
+            if (fontFamily.TryGetValue("font-family", out currentFontFamily) && currentFontFamily == "Symbol")
             {
                 foreach (var item in SymbolToUnicode)
                 {

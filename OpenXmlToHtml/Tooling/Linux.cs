@@ -18,7 +18,7 @@ namespace Codeuctivity.OpenXmlToHtml.Tooling
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "/bin/bash",
-                    Arguments = $"-c \"{escapedArgs}\"",
+                    Arguments = "-c \"{escapedArgs}\"",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
@@ -31,7 +31,7 @@ namespace Codeuctivity.OpenXmlToHtml.Tooling
 
             if (process.ExitCode != 0)
             {
-                throw new Exception($"Failed to execute '{ChromiumInstallCommand}'");
+                throw new Exception("Failed to execute '{ChromiumInstallCommand}'");
             }
         }
 

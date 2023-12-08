@@ -13,7 +13,7 @@ namespace Codeuctivity.OpenXmlToHtml
         /// <summary>
         /// DefaultBreakHandler is used if TransformBreak is not applied to a page break
         /// </summary>
-        public IBreakHandler DefaultBreakHandler { get; }
+		public IBreakHandler DefaultBreakHandler { get; private set; }
 
         /// <summary>
         ///
@@ -31,7 +31,7 @@ namespace Codeuctivity.OpenXmlToHtml
         /// <returns></returns>
         public IEnumerable<XNode> TransformBreak(XElement element)
         {
-            if (element.Attribute(W.type)?.Value == "page")
+            if (element.Attribute(W.type).Value == "page")
             {
                 var pageBreakDiv = new XElement(Xhtml.div);
                 pageBreakDiv.Add(new XAttribute(H.Style, "break-before: page;"));

@@ -1,56 +1,77 @@
-<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFrameworks>net8.0</TargetFrameworks>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<RepositoryUrl>https://github.com/Codeuctivity/OpenXmlToHtml</RepositoryUrl>
-		<PackageTags>openxml docx html</PackageTags>
-		<Authors>Stefan Seeland</Authors>
-		<Company>Codeuctivity</Company>
-		<Version Condition="'$(CURRENT_VERSION)' != ''">$(CURRENT_VERSION)</Version>
-		<Version Condition="'$(CURRENT_VERSION)' == ''">0.0.1</Version>
-		<AssemblyVersion>$(Version)</AssemblyVersion>
-		<FileVersion>$(Version)</FileVersion>
-		<PackageVersion>$(Version)-prerelease</PackageVersion>
-		<PackageReleaseNotes>$(LAST_COMMIT_MESSAGE)</PackageReleaseNotes>
-		<PackageIcon>NugetIcon.png</PackageIcon>
-		<PackageProjectUrl>https://github.com/Codeuctivity/OpenXmlToHtml</PackageProjectUrl>
-		<Description>Converts docx to html without the need to setup any dependency</Description>
-		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<AssemblyOriginatorKeyFile>OpenXmlToHtml.snk</AssemblyOriginatorKeyFile>
-		<SignAssembly>true</SignAssembly>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<LangVersion>9.0</LangVersion>
-		<Nullable>enable</Nullable>
-		<PackageId>Codeuctivity.OpenXmlToHtml</PackageId>
-		<PackageReadmeFile>nugetReadme.md</PackageReadmeFile>
-		<Product>OpenXmlToHtml</Product>
-		<AssemblyName>Codeuctivity.OpenXmlToHtml</AssemblyName>
-		<RootNamespace>Codeuctivity.OpenXmlToHtml</RootNamespace>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="docs\nugetReadme.md" Pack="true" PackagePath="\" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Codeuctivity.OpenXmlPowerTools" Version="7.0.210" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.43.0.51858">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="NugetIcon.png" Pack="true" PackagePath="\" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Remove="C:\Users\Stefan\source\repos\OpenXmlToHtml\.editorconfig" />
-	</ItemGroup>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DC916A03-DC18-4E31-A37A-23BD35CF9297}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenXmlToHtml1</RootNamespace>
+    <AssemblyName>OpenXmlToHtml1</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Codeuctivity.OpenXmlPowerTools">
+      <HintPath>..\lib\Codeuctivity.OpenXmlPowerTools.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>..\lib\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExportImageHandler.cs" />
+    <Compile Include="IOpenXmlToHtml.cs" />
+    <Compile Include="OpenXmlToHtml.cs" />
+    <Compile Include="PageBreakHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SymbolHandler.cs" />
+    <Compile Include="TextSymbolToUnicodeHandler.cs" />
+    <Compile Include="Tooling\Linux.cs" />
+    <Compile Include="WebSafeFontsHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NugetIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="docs\nugetReadme.md" />
+    <None Include="OpenXmlToHtml.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

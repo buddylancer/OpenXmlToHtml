@@ -15,7 +15,7 @@ namespace Codeuctivity.OpenXmlToHtml
         /// <summary>
         /// Images of Open XML
         /// </summary>
-        public IDictionary<string, byte[]> Images { get; }
+		public IDictionary<string, byte[]> Images { get; private set; }
 
         /// <summary>
         /// Transforms OpenXml Images to HTML embeddable images
@@ -34,14 +34,16 @@ namespace Codeuctivity.OpenXmlToHtml
         public XElement TransformImage(ImageInfo imageInfo)
         {
             var cid = Guid.NewGuid().ToString();
-            using var memoryStream = new MemoryStream();
-            imageInfo.Image.CopyTo(memoryStream);
+            using (var memoryStream = new MemoryStream())
+			{
+				imageInfo.Image.CopyTo(memoryStream);
 
-            Images.Add(cid, memoryStream.ToArray());
+				Images.Add(cid, memoryStream.ToArray());
 
-            var cidReference = $"cid: {cid}";
+				var cidReference = "cid: {cid}";
 
-            return new XElement(Xhtml.img, new XAttribute(NoNamespace.src, cidReference), imageInfo.ImgStyleAttribute, imageInfo?.AltText != null ? new XAttribute(NoNamespace.alt, imageInfo.AltText) : null);
+				return new XElement(Xhtml.img, new XAttribute(NoNamespace.src, cidReference), imageInfo.ImgStyleAttribute, imageInfo.AltText != null ? new XAttribute(NoNamespace.alt, imageInfo.AltText) : null);
+			}
         }
     }
 }

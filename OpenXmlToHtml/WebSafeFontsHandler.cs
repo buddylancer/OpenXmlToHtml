@@ -14,7 +14,7 @@ namespace Codeuctivity.OpenXmlToHtml
         /// </summary>
         public string[] WebSafeFontNames { get; private set; }
 
-        private FontHandler FontHandler { get; }
+		private FontHandler FontHandler { get; set; }
 
         /// <summary>
         /// Default ctor

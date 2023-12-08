@@ -41,10 +41,16 @@ namespace Codeuctivity.OpenXmlToHtml
                 throw new FileNotFoundException(sourceOpenXmlFilePath);
             }
 
-            using var sourceIpenXml = new FileStream(sourceOpenXmlFilePath, FileMode.Open, FileAccess.Read);
-            using var html = await ConvertToHtmlAsync(sourceIpenXml, sourceOpenXmlFilePath, useWebSafeFonts).ConfigureAwait(false);
-            using var destinationHtmlFile = new FileStream(destinationHtmlFilePath, FileMode.CreateNew, FileAccess.Write);
-            await html.CopyToAsync(destinationHtmlFile).ConfigureAwait(false);
+            using (var sourceIpenXml = new FileStream(sourceOpenXmlFilePath, FileMode.Open, FileAccess.Read))
+			{
+				using (var html = await ConvertToHtmlAsync(sourceIpenXml, sourceOpenXmlFilePath, useWebSafeFonts).ConfigureAwait(false))
+				{
+					using (var destinationHtmlFile = new FileStream(destinationHtmlFilePath, FileMode.CreateNew, FileAccess.Write))
+					{
+						await html.CopyToAsync(destinationHtmlFile).ConfigureAwait(false);
+					}
+				}
+			}
         }
 
         /// <summary>
@@ -90,7 +96,7 @@ namespace Codeuctivity.OpenXmlToHtml
         {
             if (sourceOpenXml == null)
             {
-                throw new ArgumentNullException(nameof(sourceOpenXml));
+                throw new ArgumentNullException("Stream");
             }
 
             return ConvertToHtmlInternalAsync(sourceOpenXml, fallbackPageTitle, new ImageHandler(), useWebSafeFonts);
@@ -108,7 +114,7 @@ namespace Codeuctivity.OpenXmlToHtml
         {
             if (sourceOpenXml == null)
             {
-                throw new ArgumentNullException(nameof(sourceOpenXml));
+                throw new ArgumentNullException("Stream");
             }
 
             return ConvertToHtmlInternalAsync(sourceOpenXml, fallbackPageTitle, new ExportImageHandler(images), useWebSafeFonts);
@@ -116,21 +122,25 @@ namespace Codeuctivity.OpenXmlToHtml
 
         private static async Task<Stream> ConvertToHtmlInternalAsync(Stream sourceOpenXml, string fallbackPageTitle, IImageHandler imageHandler, bool useWebSafeFonts)
         {
-            using var memoryStream = new MemoryStream();
-            await sourceOpenXml.CopyToAsync(memoryStream).ConfigureAwait(false);
-            sourceOpenXml = memoryStream;
+            using (var memoryStream = new MemoryStream())
+			{
+				await sourceOpenXml.CopyToAsync(memoryStream).ConfigureAwait(false);
+				sourceOpenXml = memoryStream;
 
-            using var wordProcessingDocument = WordprocessingDocument.Open(sourceOpenXml, true);
-            var coreFilePropertiesPart = wordProcessingDocument.CoreFilePropertiesPart;
-            var computedPageTitle = coreFilePropertiesPart?.GetXDocument().Descendants(DC.title).FirstOrDefault();
-            var pageTitle = string.IsNullOrEmpty(computedPageTitle?.Value) ? fallbackPageTitle : computedPageTitle!.Value;
+				using (var wordProcessingDocument = WordprocessingDocument.Open(sourceOpenXml, true))
+				{
+					var coreFilePropertiesPart = wordProcessingDocument.CoreFilePropertiesPart;
+					var computedPageTitle = coreFilePropertiesPart.GetXDocument().Descendants(DC.title).FirstOrDefault();
+					var pageTitle = string.IsNullOrEmpty(computedPageTitle.Value) ? fallbackPageTitle : computedPageTitle.Value;
 
-            var htmlElement = WmlToHtmlConverter.ConvertToHtml(wordProcessingDocument, CreateHtmlConverterSettings(pageTitle, imageHandler, useWebSafeFonts ? new WebSafeFontsHandler() : new FontHandler()));
-            var html = new XDocument(new XDocumentType("html", "-//W3C//DTD XHTML 1.1//EN", "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd", null), htmlElement);
-            var memoryStreamHtml = new MemoryStream();
-            html.Save(memoryStreamHtml, SaveOptions.DisableFormatting);
-            memoryStreamHtml.Position = 0;
-            return memoryStreamHtml;
+					var htmlElement = WmlToHtmlConverter.ConvertToHtml(wordProcessingDocument, CreateHtmlConverterSettings(pageTitle, imageHandler, useWebSafeFonts ? (IFontHandler)new WebSafeFontsHandler() : new FontHandler()));
+					var html = new XDocument(new XDocumentType("html", "-//W3C//DTD XHTML 1.1//EN", "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd", null), htmlElement);
+					var memoryStreamHtml = new MemoryStream();
+					html.Save(memoryStreamHtml, SaveOptions.DisableFormatting);
+					memoryStreamHtml.Position = 0;
+					return memoryStreamHtml;
+				}
+			}
         }
 
         private static WmlToHtmlConverterSettings CreateHtmlConverterSettings(string pageTitle, IImageHandler imageHandler, IFontHandler fontHandler)

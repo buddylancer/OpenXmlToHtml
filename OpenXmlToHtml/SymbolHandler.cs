@@ -15,8 +15,8 @@ namespace Codeuctivity.OpenXmlToHtml
         /// <summary>
         /// Dictionary codes from symbol char to Unicode
         /// </summary>
-        public static Dictionary<string, string> SymbolCharDictonary => new Dictionary<string, string>
-    {
+        public static Dictionary<string, string> SymbolCharDictonary = new Dictionary<string, string>
+		{
             {"F020"," "},
             {"F021","!"},
             {"F022","∀"},
@@ -247,8 +247,8 @@ namespace Codeuctivity.OpenXmlToHtml
         /// <summary>
         /// Dictonary codes from wingdings char to unicode
         /// </summary>
-        public static Dictionary<string, string> WingdingsCharDictonary => new Dictionary<string, string>
-    {
+        public static Dictionary<string, string> WingdingsCharDictonary = new Dictionary<string, string>
+		{
             {"F020"," "},
             {"F021","🖉"},
             {"F022","✂"},
@@ -490,24 +490,30 @@ namespace Codeuctivity.OpenXmlToHtml
         /// <returns></returns>
         public XElement TransformSymbol(XElement element, Dictionary<string, string> fontFamily)
         {
-            if (fontFamily.TryGetValue("font-family", out var currentSymbolFontFamily) && currentSymbolFontFamily == "Symbol")
+			string currentSymbolFontFamily;
+            if (fontFamily.TryGetValue("font-family", out currentSymbolFontFamily) && currentSymbolFontFamily == "Symbol")
             {
-                var customChar = element.Attribute(W._char)?.Value;
+                var customChar = element.Attribute(W._char).Value;
 
-                if (customChar != null && SymbolCharDictonary.TryGetValue(customChar, out var commonChar))
+				string commonChar;
+                if (customChar != null && SymbolCharDictonary.TryGetValue(customChar, out commonChar))
                 {
                     return new XElement(Xhtml.span, commonChar);
                 }
             }
-            else if (fontFamily.TryGetValue("font-family", out var currentWingdingsFontFamily) && currentWingdingsFontFamily == "Wingdings")
-            {
-                var customChar = element.Attribute(W._char)?.Value;
+            else {
+				string currentWingdingsFontFamily;
+				if (fontFamily.TryGetValue("font-family", out currentWingdingsFontFamily) && currentWingdingsFontFamily == "Wingdings")
+				{
+					var customChar = element.Attribute(W._char).Value;
 
-                if (customChar != null && WingdingsCharDictonary.TryGetValue(customChar, out var commonChar))
-                {
-                    return new XElement(Xhtml.span, commonChar);
-                }
-            }
+					string commonChar;
+					if (customChar != null && WingdingsCharDictonary.TryGetValue(customChar, out commonChar))
+					{
+						return new XElement(Xhtml.span, commonChar);
+					}
+				}
+			}
 
             return DefaultSymbolHandler.TransformSymbol(element, fontFamily);
         }
